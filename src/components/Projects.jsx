@@ -1,31 +1,95 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useState } from "react";
+import { FiGithub, FiExternalLink, FiEye } from "react-icons/fi";
 
 export default function Projects() {
+  const [activeFilter, setActiveFilter] = useState("all");
+  const [hoveredProject, setHoveredProject] = useState(null);
+
+  const filters = [
+    { id: "all", label: "All Projects", color: "from-cyan-500 to-purple-500" },
+    { id: "web", label: "Web Apps", color: "from-blue-500 to-cyan-500" },
+    {
+      id: "data",
+      label: "Data Analysis",
+      color: "from-green-500 to-emerald-500",
+    },
+    { id: "system", label: "Systems", color: "from-orange-500 to-red-500" },
+  ];
+
   const projects = [
     {
-      name: "ATM Management System",
-      description: "Terminal-based banking app with login, deposit, withdrawal, and balance check.",
-      tech: ["Python", "MySQL"],
-      demo: "#",
-      github: "https://github.com/hinamurme/ATM-Project.git",
+      name: "E-Commerce Web Application",
+      description:
+        "A full-stack MERN-based e-commerce platform with secure JWT authentication, dynamic product listing, cart management, and order processing functionality. Built responsive UI using Tailwind CSS and Material-UI with complete frontend-backend integration.",
+      tech: [
+        "MongoDB",
+        "Express.js",
+        "React.js",
+        "Node.js",
+        "JWT Authentication",
+        "Redux Toolkit",
+        "Tailwind CSS",
+        "Material-UI",
+        "REST API",
+      ],
+      github: "https://github.com/hinamurme/E-comm.git",
+      demo: "https://e-comm-five-lac.vercel.app/",
+      image: "/E-com.jpg",
+      gradient: "from-cyan-500 to-blue-500",
     },
+
     {
-      name: "IPL Data Analysis & Dashboard",
-      description: "Analyzed IPL datasets and built Power BI dashboards for insights.",
-      tech: ["MySQL", "Power BI"],
-      demo: "#",
-      github: "https://github.com/hinamurme/MYSQL-PROJECT.git",
+      name: "Admin Dashboard Panel",
+      description:
+        "A secure admin dashboard built with React and Tailwind CSS for managing products, users, and orders. Integrated with REST APIs and JWT authentication to handle protected routes and CRUD operations efficiently.",
+      tech: [
+        "React.js",
+        "Tailwind CSS",
+        "Redux Toolkit",
+        "JWT Authentication",
+        "REST API",
+      ],
+      github: "https://github.com/hinamurme/AdminWeb.git",
+      demo: "https://admin-web-azure.vercel.app/login",
+      image: "/Admin.jpg",
+      gradient: "from-indigo-500 to-purple-500",
     },
+
     {
-      name: "Portfolio Website",
-      description: "Responsive portfolio with modals, animations, and smooth scrolling.",
-      tech: ["HTML", "CSS", "JavaScript", "Next.js"],
-      demo: "https://hina-portfolio-eight.vercel.app/",
+      name: "Grocify – Grocery Web Application",
+      description:
+        "A responsive grocery shopping web application built using the MERN stack. Users can browse products, manage cart functionality, and experience smooth backend API integration.",
+      tech: [
+        "MongoDB",
+        "Express.js",
+        "React.js",
+        "Node.js",
+        "Tailwind CSS",
+        "REST API",
+      ],
+      github: "https://github.com/hinamurme/Grocify.git",
+      demo: "https://grocify-sigma.vercel.app/",
+      image: "/Grocery.jpg",
+      gradient: "from-green-500 to-emerald-500",
+    },
+
+    {
+      name: "Modern Portfolio Website",
+      description:
+        "A responsive and animated personal portfolio built using React and Tailwind CSS with smooth animations, interactive UI components, and modern design principles.",
+      tech: ["React.js", "Tailwind CSS", "Framer Motion", "JavaScript"],
       github: "https://github.com/hinamurme/PORTFOLIO1.git",
+      demo: "https://hina-portfolio-eight.vercel.app/",
+      image: "/Portfolio.jpg",
+      gradient: "from-purple-500 to-pink-500",
     },
   ];
+
+  // Since we removed category, show all projects regardless of filter
+  const filteredProjects = projects;
 
   // Animation variants
   const containerVariants = {
@@ -33,16 +97,17 @@ export default function Projects() {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.2,
+        staggerChildren: 0.1,
       },
     },
   };
 
   const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
+    hidden: { y: 30, opacity: 0, scale: 0.9 },
     visible: {
       y: 0,
       opacity: 1,
+      scale: 1,
       transition: {
         duration: 0.5,
         ease: "easeOut",
@@ -51,108 +116,283 @@ export default function Projects() {
   };
 
   return (
-    <section id="projects" className="py-20 px-4 sm:px-6 lg:px- bg-gray-50">
-      <div className="max-w-6xl mx-auto">
+    <section
+      id="projects"
+      className="min-h-screen py-16 sm:py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-950 via-gray-900 to-black relative overflow-hidden"
+    >
+      {/* Animated Background */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute top-1/4 right-1/4 w-48 sm:w-64 md:w-96 h-48 sm:h-64 md:h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-1/4 left-1/4 w-48 sm:w-64 md:w-96 h-48 sm:h-64 md:h-96 bg-cyan-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:50px_50px] opacity-20"></div>
+      </div>
+
+      <div className="relative z-10 max-w-7xl mx-auto">
         {/* Section Header */}
-        <motion.div 
-          className="text-center mb-16"
+        <motion.div
+          className="text-center mb-12 sm:mb-16"
           initial={{ opacity: 0, y: -20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.6 }}
         >
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-800 mb-4">
-            My <span className="text-indigo-600">Projects</span>
-          </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Here are some of the projects I've worked on that showcase my skills and experience.
-          </p>
-          <div className="w-20 h-1 bg-indigo-600 mx-auto mt-4"></div>
+          <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-gradient-to-r from-cyan-500/20 to-purple-500/20 border border-cyan-500/30 mb-4 sm:mb-6">
+            <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-cyan-400 rounded-full animate-pulse"></div>
+            <span className="text-xs sm:text-sm font-medium text-cyan-300">
+              My Work
+            </span>
+          </div>
+
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6"
+          >
+            <span className="text-white">Featured </span>
+            <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+              Projects
+            </span>
+          </motion.h2>
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="text-sm sm:text-base md:text-lg text-gray-400 max-w-3xl mx-auto px-4"
+          >
+            A collection of my recent work showcasing innovation, technical
+            expertise, and attention to detail.
+          </motion.p>
         </motion.div>
 
         {/* Projects Grid */}
-        <motion.div 
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+        <motion.div
+          className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 md:gap-8 px-2 sm:px-0"
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: "-50px" }}
+          viewport={{ once: true, margin: "-100px" }}
         >
-          {projects.map((project, index) => (
-            <motion.div 
-              key={index} 
-              className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 group"
+          {filteredProjects.map((project, index) => (
+            <motion.div
+              key={index}
+              className="group relative"
               variants={itemVariants}
-              whileHover={{ scale: 1.03 }}
+              onMouseEnter={() => setHoveredProject(project.name)}
+              onMouseLeave={() => setHoveredProject(null)}
             >
-              {/* Project Header with Gradient */}
-              <div className="h-2 bg-gradient-to-r from-indigo-500 to-purple-500"></div>
-              
-              <div className="p-6">
-                {/* Project Title */}
-                <h3 className="text-xl font-bold text-gray-800 mb-3 group-hover:text-indigo-600 transition-colors">
-                  {project.name}
-                </h3>
-                
-                {/* Project Description */}
-                <p className="text-gray-600 mb-4 leading-relaxed">
-                  {project.description}
-                </p>
-                
-                {/* Technologies Used */}
-                <div className="mb-5">
-                  <div className="flex flex-wrap gap-2">
-                    {project.tech.map((tech, techIndex) => (
-                      <motion.span 
-                        key={techIndex} 
-                        className="px-3 py-1 bg-indigo-100 text-indigo-700 text-xs font-medium rounded-full"
-                        whileHover={{ scale: 1.05 }}
-                        transition={{ type: "spring", stiffness: 300 }}
+              {/* Project Card */}
+              <motion.div
+                className="relative h-full rounded-xl sm:rounded-2xl overflow-hidden border border-gray-800/50 bg-gray-900/30 backdrop-blur-sm"
+                whileHover={{
+                  y: -5,
+                  borderColor: "rgba(139, 92, 246, 0.3)",
+                }}
+                transition={{ duration: 0.3 }}
+              >
+                {/* Gradient Border Effect */}
+                <div className="absolute inset-0 rounded-xl sm:rounded-2xl bg-gradient-to-r from-transparent via-transparent to-transparent group-hover:via-cyan-500/10" />
+
+                {/* Project Image/Background */}
+                <div className="relative h-32 sm:h-40 md:h-48 overflow-hidden">
+                  {/* Actual Image */}
+                  <img
+                    src={project.image}
+                    alt={project.name}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.target.style.display = "none";
+                      // Fallback gradient will show through
+                    }}
+                  />
+                  {/* Gradient Overlay */}
+                  <div
+                    className={`absolute inset-0 bg-gradient-to-r ${project.gradient} opacity-40 mix-blend-overlay`}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/50 to-transparent" />
+
+                  {/* Tech Stack Overlay */}
+                  <div className="absolute top-2 sm:top-3 md:top-4 left-2 sm:left-3 md:left-4 flex flex-wrap gap-1 sm:gap-2">
+                    {project.tech.slice(0, 2).map((tech, techIndex) => (
+                      <motion.span
+                        key={techIndex}
+                        initial={{ opacity: 0, scale: 0 }}
+                        whileInView={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: techIndex * 0.1 }}
+                        className="px-2 sm:px-3 py-0.5 sm:py-1 bg-gray-900/80 backdrop-blur-sm text-gray-300 text-xs font-medium rounded-full border border-gray-700"
                       >
                         {tech}
                       </motion.span>
                     ))}
+                    {project.tech.length > 2 && (
+                      <span className="px-2 sm:px-3 py-0.5 sm:py-1 bg-gray-900/80 backdrop-blur-sm text-gray-300 text-xs font-medium rounded-full border border-gray-700">
+                        +{project.tech.length - 2}
+                      </span>
+                    )}
                   </div>
                 </div>
-                
-                {/* Project Links */}
-                <div className="flex justify-between items-center">
-                  <motion.a 
-                    href={project.github} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="flex items-center text-gray-700 hover:text-indigo-600 transition-colors"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
+
+                {/* Project Content */}
+                <div className="p-3 sm:p-4 md:p-6">
+                  {/* Project Title */}
+                  <motion.h3
+                    className="text-base sm:text-lg md:text-xl font-bold text-white mb-2 group-hover:text-cyan-300 transition-colors"
+                    animate={{
+                      scale: hoveredProject === project.name ? 1.02 : 1,
+                    }}
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414L3.414 10l2.293 2.293a1 1 0 11-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 11-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
-                    </svg>
-                    Code
-                  </motion.a>
-                  
-                  <motion.a 
-                    href={project.demo} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className={`flex items-center px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                      project.demo === "#" 
-                        ? "bg-gray-200 text-gray-500 cursor-not-allowed" 
-                        : "bg-indigo-600 text-white hover:bg-indigo-700"
-                    }`}
-                    onClick={e => project.demo === "#" && e.preventDefault()}
-                    whileHover={{ scale: project.demo !== "#" ? 1.05 : 1 }}
-                    whileTap={{ scale: project.demo !== "#" ? 0.95 : 1 }}
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
-                    </svg>
-                    Live Demo
-                  </motion.a>
+                    {project.name}
+                  </motion.h3>
+
+                  {/* Project Description */}
+                  <p className="text-xs sm:text-sm text-gray-400 mb-4 leading-relaxed line-clamp-3">
+                    {project.description}
+                  </p>
+
+                  {/* Project Links */}
+                  <div className="flex items-center justify-between pt-3 border-t border-gray-800">
+                    <div className="flex items-center gap-2 sm:gap-3">
+                      <motion.a
+                        href={project.github}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`flex items-center gap-1 sm:gap-2 px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 rounded-lg transition-all text-xs sm:text-sm ${
+                          project.github === "#"
+                            ? "bg-gray-800/50 text-gray-500 cursor-not-allowed border border-gray-700"
+                            : "bg-gray-800/50 text-gray-300 hover:text-white hover:bg-gray-800 border border-gray-700 hover:border-cyan-500/30"
+                        }`}
+                        onClick={(e) =>
+                          project.github === "#" && e.preventDefault()
+                        }
+                        whileHover={{
+                          scale: project.github !== "#" ? 1.05 : 1,
+                        }}
+                        whileTap={{ scale: project.github !== "#" ? 0.95 : 1 }}
+                      >
+                        <FiGithub className="h-3 w-3 sm:h-4 sm:w-4" />
+                        <span className="hidden xs:inline">Code</span>
+                      </motion.a>
+
+                      <motion.a
+                        href={project.demo}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`flex items-center gap-1 sm:gap-2 px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 rounded-lg transition-all text-xs sm:text-sm ${
+                          project.demo === "#"
+                            ? "bg-gray-800/50 text-gray-500 cursor-not-allowed border border-gray-700"
+                            : "bg-gradient-to-r from-cyan-600 to-purple-600 text-white hover:shadow-lg hover:shadow-cyan-500/20 border border-cyan-500/30"
+                        }`}
+                        onClick={(e) =>
+                          project.demo === "#" && e.preventDefault()
+                        }
+                        whileHover={{ scale: project.demo !== "#" ? 1.05 : 1 }}
+                        whileTap={{ scale: project.demo !== "#" ? 0.95 : 1 }}
+                      >
+                        <FiExternalLink className="h-3 w-3 sm:h-4 sm:w-4" />
+                        <span className="hidden xs:inline">Live</span>
+                      </motion.a>
+                    </div>
+
+                    {/* View Details Button */}
+                    <motion.button
+                      className="p-1.5 sm:p-2 rounded-lg bg-gray-800/50 text-gray-400 hover:text-white hover:bg-gray-800 border border-gray-700 hover:border-purple-500/30 transition-all"
+                      whileHover={{ scale: 1.1, rotate: 5 }}
+                      whileTap={{ scale: 0.9 }}
+                      onClick={() => {
+                        console.log(`View details for ${project.name}`);
+                      }}
+                    >
+                      <FiEye className="h-3 w-3 sm:h-4 sm:w-4" />
+                    </motion.button>
+                  </div>
                 </div>
-              </div>
+
+                {/* Hover Glow Effect */}
+                <motion.div
+                  className="absolute inset-0 rounded-xl sm:rounded-2xl  "
+                  initial={false}
+                  animate={{
+                    opacity: hoveredProject === project.name ? 1 : 0,
+                  }}
+                />
+              </motion.div>
             </motion.div>
           ))}
+        </motion.div>
+
+        {/* Stats and CTA */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.5 }}
+          className="mt-12 sm:mt-16 text-center px-4"
+        >
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 md:gap-6 mb-8 sm:mb-12">
+            {[
+              { value: "4", label: "Total Projects", color: "text-cyan-400" },
+              { value: "4", label: "Categories", color: "text-purple-400" },
+              { value: "15+", label: "Technologies", color: "text-pink-400" },
+              {
+                value: "100%",
+                label: "Client Satisfaction",
+                color: "text-green-400",
+              },
+            ].map((stat, index) => (
+              <motion.div
+                key={stat.label}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.6 + index * 0.1 }}
+                className="text-center p-2 sm:p-3 md:p-4"
+              >
+                <div
+                  className={`text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold ${stat.color} mb-1 sm:mb-2`}
+                >
+                  {stat.value}
+                </div>
+                <div className="text-xs sm:text-sm text-gray-400">
+                  {stat.label}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          <motion.p
+            className="text-sm sm:text-base text-gray-400 mb-6 sm:mb-8 max-w-2xl mx-auto"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ delay: 1 }}
+          >
+            Interested in collaborating or have a project in mind?
+          </motion.p>
+
+          <motion.a
+            href="#contact"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="inline-flex items-center gap-2 sm:gap-3 px-5 sm:px-6 md:px-8 py-3 sm:py-3.5 md:py-4 bg-gradient-to-r from-cyan-600 via-purple-600 to-pink-600 text-sm sm:text-base text-white font-semibold rounded-lg sm:rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 group"
+          >
+            <span>Start a Project With Me</span>
+            <motion.svg
+              className="h-4 w-4 sm:h-5 sm:w-5"
+              animate={{ x: [0, 5, 0] }}
+              transition={{ duration: 1.5, repeat: Infinity }}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M17 8l4 4m0 0l-4 4m4-4H3"
+              />
+            </motion.svg>
+          </motion.a>
         </motion.div>
       </div>
     </section>

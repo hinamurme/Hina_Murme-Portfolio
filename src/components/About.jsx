@@ -1,13 +1,71 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useState } from "react";
+import { FiCode, FiDatabase, FiLayers,FiBookOpen, FiTrendingUp, FiAward, FiUsers } from "react-icons/fi";
 
 export default function About() {
-  const skills = [
-    "Python", "Django", "SQL", "MySQL", "MongoDB", 
-    "JavaScript", "React", "Next.js", "Docker", "AWS",
-    "HTML5", "CSS3", "Git", "REST API", "Power BI"
+  const [hoveredSkill, setHoveredSkill] = useState(null);
+  const [activeTab, setActiveTab] = useState("skills");
+
+  const tabs = [
+    { id: "skills", label: "Technical Skills", icon: <FiCode /> },
+    { id: "experience", label: "Experience", icon: <FiTrendingUp /> },
+    { id: "education", label: "Education", icon: <FiAward /> },
   ];
+
+  const experiences = [
+    {
+      title: "Full Stack Developer",
+      company: "Freelance Projects",
+      period: "2023 - Present",
+      description: "Building responsive web applications with modern technologies and best practices.",
+      icon: <FiCode />,
+      color: "from-cyan-500 to-blue-500"
+    },
+    {
+      title: "Data Analyst Intern",
+      company: "Tech Solutions Inc.",
+      period: "2022 - 2023",
+      description: "Analyzed datasets and created interactive dashboards for business insights.",
+      icon: <FiDatabase />,
+      color: "from-emerald-500 to-green-500"
+    },
+    {
+      title: "Project Developer",
+      company: "Academic Projects",
+      period: "2021 - 2022",
+      description: "Developed various applications and systems during academic studies.",
+      icon: <FiLayers />,
+      color: "from-purple-500 to-pink-500"
+    },
+  ];
+
+  const education = [
+    {
+      degree: "Bachelor of Computer Science",
+      institution: "University of Technology",
+      year: "2019 - 2023",
+      gpa: "3.8/4.0",
+      icon: <FiAward />,
+      color: "from-blue-500 to-indigo-500"
+    },
+    {
+      degree: "Full Stack Development",
+      institution: "Online Certification",
+      year: "2022",
+      specialization: "MERN Stack",
+      icon: <FiCode />,
+      color: "from-cyan-500 to-teal-500"
+    },
+  ];
+
+const stats = [
+  { value: "6 Months", label: "MERN Experience", icon: <FiTrendingUp />, color: "text-cyan-400" },
+  { value: "4+", label: "Web Applications", icon: <FiCode />, color: "text-purple-400" },
+  { value: "JWT + REST", label: "Backend Expertise", icon: <FiDatabase />, color: "text-pink-400" },
+  { value: "MongoDB", label: "Database Specialization", icon: <FiUsers />, color: "text-amber-400" },
+];
 
   // Animation variants
   const containerVariants = {
@@ -15,8 +73,8 @@ export default function About() {
     visible: {
       opacity: 1,
       transition: {
-        delayChildren: 0.3,
-        staggerChildren: 0.2
+        staggerChildren: 0.1,
+        delayChildren: 0.2
       }
     }
   };
@@ -27,226 +85,285 @@ export default function About() {
       y: 0,
       opacity: 1,
       transition: {
-        duration: 0.5
-      }
-    }
-  };
-
-  const skillVariants = {
-    hidden: { scale: 0 },
-    visible: {
-      scale: 1,
-      transition: {
-        type: "spring",
-        stiffness: 260,
-        damping: 20
-      }
-    }
-  };
-
-  const progressVariants = {
-    hidden: { width: 0 },
-    visible: {
-      width: "100%",
-      transition: {
-        duration: 1.5,
+        duration: 0.5,
         ease: "easeOut"
       }
     }
   };
 
+  const skillVariants = {
+    hidden: { scale: 0.8, opacity: 0 },
+    visible: {
+      scale: 1,
+      opacity: 1,
+      transition: {
+        type: "spring",
+        stiffness: 100,
+        damping: 10
+      }
+    }
+  };
+
+  const ProgressBar = ({ level, gradient }) => (
+    <div className="relative w-full h-2 bg-gray-800 rounded-full overflow-hidden mt-2">
+      <motion.div
+        initial={{ width: 0 }}
+        whileInView={{ width: `${level}%` }}
+        viewport={{ once: true }}
+        transition={{ duration: 1.5, ease: "easeOut" }}
+        className={`absolute inset-y-0 left-0 h-full bg-gradient-to-r ${gradient} rounded-full`}
+      >
+        <motion.div
+          className="absolute inset-0 bg-white/20"
+          animate={{ x: ["-100%", "100%"] }}
+          transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+        />
+      </motion.div>
+    </div>
+  );
+
   return (
-    <section id="about" className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-white to-indigo-50/30">
-      <div className="max-w-6xl mx-auto">
+    <section id="about" className="min-h-screen py-12 sm:py-16 md:py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-950 via-gray-900 to-black relative overflow-hidden">
+      
+      {/* Animated Background */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute top-1/4 left-1/4 w-48 sm:w-64 md:w-96 h-48 sm:h-64 md:h-96 bg-cyan-500/10 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-48 sm:w-64 md:w-96 h-48 sm:h-64 md:h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:30px_30px] sm:bg-[size:50px_50px] opacity-20"></div>
+      </div>
+
+      <div className="relative z-10 max-w-7xl mx-auto">
         {/* Section Header */}
         <motion.div 
-          className="text-center mb-16"
+          className="text-center mb-10 sm:mb-12 md:mb-16"
           initial={{ opacity: 0, y: -20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.6 }}
         >
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-800 mb-4">
-            About <span className="text-indigo-600">Me</span>
-          </h2>
-          <motion.div 
-            className="w-20 h-1 bg-gradient-to-r from-indigo-500 to-purple-500 mx-auto rounded-full"
-            initial={{ width: 0 }}
-            whileInView={{ width: 80 }}
+          <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-gradient-to-r from-cyan-500/20 to-purple-500/20 border border-cyan-500/30 mb-4 sm:mb-6">
+            <div className="w-1.5 sm:w-2 h-1.5 sm:h-2 bg-cyan-400 rounded-full animate-pulse"></div>
+            <span className="text-xs sm:text-sm font-medium text-cyan-300">Get to Know Me</span>
+          </div>
+          
+          <motion.h2 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-          ></motion.div>
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6"
+          >
+            <span className="text-white">About </span>
+            <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+              Me
+            </span>
+          </motion.h2>
+          
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="text-gray-400 text-sm sm:text-base md:text-lg max-w-3xl mx-auto px-2"
+          >
+            Passionate developer crafting digital experiences with cutting-edge technologies
+          </motion.p>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-          {/* Text Content */}
-          <motion.div 
-            className="space-y-6"
+        {/* Stats Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+          className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 md:gap-6 mb-10 sm:mb-12 md:mb-16"
+        >
+          {stats.map((stat, index) => (
+            <motion.div
+              key={stat.label}
+              initial={{ opacity: 0, scale: 0.8 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.4 + index * 0.1 }}
+              whileHover={{ y: -5 }}
+              className="text-center p-3 sm:p-4 md:p-6 rounded-xl sm:rounded-2xl bg-gray-900/50 backdrop-blur-sm border border-gray-800/50 hover:border-cyan-500/30 transition-all duration-300"
+            >
+              <div className="inline-flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-lg sm:rounded-xl bg-gray-800/50 mb-2 sm:mb-3 md:mb-4">
+                <span className={`text-base sm:text-lg md:text-xl ${stat.color}`}>
+                  {stat.icon}
+                </span>
+              </div>
+              <div className={`text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold ${stat.color} mb-1 sm:mb-2`}>{stat.value}</div>
+              <div className="text-gray-400 text-xs sm:text-sm">{stat.label}</div>
+            </motion.div>
+          ))}
+        </motion.div>
+
+        {/* Main Content */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 md:gap-12">
+          
+          {/* Left Column */}
+          <motion.div
+            className="space-y-6 sm:space-y-8"
             variants={containerVariants}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
           >
-            <motion.p variants={itemVariants} className="text-lg text-gray-700 leading-relaxed">
-              Motivated and detail-oriented Computer Science graduate with expertise in
-              Python, SQL, Django, and frontend technologies. Skilled in building scalable
-              applications, optimizing database performance, and creating responsive UIs.
-            </motion.p>
             
-            <motion.p variants={itemVariants} className="text-lg text-gray-700 leading-relaxed">
-              Passionate about problem-solving, data-driven insights, and delivering impactful
-              business solutions in collaborative environments. Continuously learning and
-              adapting to new technologies to stay at the forefront of development practices.
-            </motion.p>
-            
-            {/* Stats */}
-            <motion.div 
-              className="grid grid-cols-2 gap-6 pt-4"
+            {/* My Journey */}
+            <motion.div
               variants={itemVariants}
+              className="p-5 sm:p-6 md:p-8 rounded-xl sm:rounded-2xl bg-gradient-to-br from-gray-900/50 to-gray-800/30 backdrop-blur-sm border border-gray-800/50"
             >
-              <motion.div 
-                className="bg-white p-5 rounded-xl shadow-md border border-indigo-100 hover:shadow-lg transition-shadow duration-300 group"
-                whileHover={{ y: -5 }}
-              >
-                <div className="text-3xl font-bold text-indigo-600 group-hover:text-indigo-700 transition-colors">30%</div>
-                <div className="text-sm text-gray-600 mt-1">Query Optimization</div>
-                <div className="w-full bg-gray-200 rounded-full h-2 mt-3 overflow-hidden">
-                  <motion.div 
-                    className="bg-indigo-600 h-2 rounded-full"
-                    initial={{ width: 0 }}
-                    whileInView={{ width: "30%" }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 1, delay: 0.5 }}
-                  ></motion.div>
+              <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-3 sm:mb-4 flex items-center gap-2 sm:gap-3">
+                <span className="bg-gradient-to-r from-cyan-500 to-purple-500 p-1.5 sm:p-2 rounded-lg">
+                  <FiCode className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6" />
+                </span>
+                My Journey
+              </h3>
+
+              <p className="text-gray-300 text-xs sm:text-sm md:text-base leading-relaxed mb-4 sm:mb-6">
+                Enthusiastic and results-driven MERN Stack Developer with 6 months of hands-on experience 
+                building scalable web applications using MongoDB, Express.js, React.js, and Node.js. 
+                Skilled in developing RESTful APIs, implementing JWT authentication, and designing 
+                responsive user interfaces using Tailwind CSS and Material-UI.
+              </p>
+
+              <p className="text-gray-300 text-xs sm:text-sm md:text-base leading-relaxed">
+                Passionate about writing clean, efficient code and solving real-world problems 
+                through full-stack development while continuously learning modern technologies.
+              </p>
+            </motion.div>
+
+            {/* Experience */}
+            <motion.div
+              variants={itemVariants}
+              className="p-5 sm:p-6 md:p-8 rounded-xl sm:rounded-2xl bg-gradient-to-br from-gray-900/50 to-gray-800/30 backdrop-blur-sm border border-gray-800/50"
+            >
+              <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-4 sm:mb-6">Experience</h3>
+
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 p-3 sm:p-4 rounded-xl bg-gray-800/30 border border-gray-700/50 hover:border-cyan-500/30 transition-all duration-300">
+                <div className="flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-gradient-to-r from-cyan-500 to-purple-500 flex items-center justify-center">
+                  <FiCode className="text-white text-base sm:text-lg" />
                 </div>
-              </motion.div>
-              <motion.div 
-                className="bg-white p-5 rounded-xl shadow-md border border-purple-100 hover:shadow-lg transition-shadow duration-300 group"
-                whileHover={{ y: -5 }}
-              >
-                <div className="text-3xl font-bold text-purple-600 group-hover:text-purple-700 transition-colors">45%</div>
-                <div className="text-sm text-gray-600 mt-1">UX Improvement</div>
-                <div className="w-full bg-gray-200 rounded-full h-2 mt-3 overflow-hidden">
-                  <motion.div 
-                    className="bg-purple-600 h-2 rounded-full"
-                    initial={{ width: 0 }}
-                    whileInView={{ width: "45%" }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 1, delay: 0.7 }}
-                  ></motion.div>
+                <div>
+                  <h4 className="text-base sm:text-lg font-semibold text-white">
+                    MERN Stack Developer (Intern / Junior Developer)
+                  </h4>
+                  <div className="text-xs sm:text-sm text-cyan-300 mb-1 sm:mb-2">
+                    6 Months Experience
+                  </div>
+                  <p className="text-gray-400 text-xs sm:text-sm">
+                    Developed and maintained full-stack web applications using React.js, Node.js, 
+                    Express.js, and MongoDB. Built REST APIs, implemented JWT-based authentication, 
+                    managed CRUD operations, optimized performance, and deployed applications.
+                  </p>
                 </div>
-              </motion.div>
+              </div>
+            </motion.div>
+
+            {/* Education */}
+            <motion.div
+              variants={itemVariants}
+              className="p-5 sm:p-6 md:p-8 rounded-xl sm:rounded-2xl bg-gradient-to-br from-gray-900/50 to-gray-800/30 backdrop-blur-sm border border-gray-800/50"
+            >
+              <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-4 sm:mb-6">Education</h3>
+
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 p-3 sm:p-4 rounded-xl bg-gray-800/30 border border-gray-700/50 hover:border-purple-500/30 transition-all duration-300">
+                <div className="flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center">
+                  <FiBookOpen className="text-white text-base sm:text-lg" />
+                </div>
+                <div>
+                  <h4 className="text-base sm:text-lg font-semibold text-white">
+                    Bachelor of Science in Computer Science
+                  </h4>
+                  <div className="text-xs sm:text-sm text-purple-300 mb-1 sm:mb-2">
+                    Dr. Babasaheb Ambedkar Marathwada University • 2021 – 2024
+                  </div>
+                  <div className="text-xs sm:text-sm text-gray-400">Grade: 65.60%</div>
+                </div>
+              </div>
             </motion.div>
           </motion.div>
 
-          {/* Skills Section */}
+          {/* Right Column */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.7 }}
+            transition={{ duration: 0.7, delay: 0.2 }}
+            className="space-y-6 sm:space-y-8"
           >
-            <motion.h3 
-              className="text-2xl font-semibold text-gray-800 mb-6"
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-            >
-              Technical Skills
-            </motion.h3>
-            <motion.div 
-              className="flex flex-wrap gap-3 mb-8"
-              variants={containerVariants}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.2 }}
-            >
-              {skills.map((skill, index) => (
-                <motion.span 
-                  key={index}
-                  className="px-4 py-2 bg-white border border-indigo-100 rounded-full text-indigo-700 text-sm font-medium shadow-sm hover:shadow-md transition-all duration-300 hover:bg-indigo-50 hover:-translate-y-0.5"
-                  variants={skillVariants}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  {skill}
-                </motion.span>
-              ))}
-            </motion.div>
             
-            {/* Experience Highlights */}
-            <motion.div 
-              className="p-6 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl border border-indigo-100 shadow-sm hover:shadow-md transition-shadow duration-300"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-              whileHover={{ y: -5 }}
-            >
-              <motion.h4 
-                className="text-lg font-semibold text-indigo-800 mb-4 flex items-center"
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.6 }}
-              >
-                <motion.span 
-                  className="bg-indigo-600 text-white p-1 rounded mr-2"
-                  initial={{ rotate: -180, opacity: 0 }}
-                  whileInView={{ rotate: 0, opacity: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: 0.8 }}
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                  </svg>
-                </motion.span>
+       
+            {/* What I Bring */}
+            <div className="p-5 sm:p-6 md:p-8 rounded-xl sm:rounded-2xl bg-gradient-to-br from-gray-900/50 to-gray-800/30 backdrop-blur-sm border border-gray-800/50">
+              <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-4 sm:mb-6 flex items-center gap-2 sm:gap-3">
+                <span className="bg-gradient-to-r from-pink-500 to-rose-500 p-1.5 sm:p-2 rounded-lg">
+                  <FiUsers className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6" />
+                </span>
                 What I Bring
-              </motion.h4>
-              <motion.ul 
-                className="space-y-3"
-                variants={containerVariants}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-              >
-                <motion.li className="flex items-start" variants={itemVariants}>
-                  <span className="text-green-500 mr-2 mt-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
-                  </span>
-                  <span className="text-gray-700">Backend development with Python & Django</span>
-                </motion.li>
-                <motion.li className="flex items-start" variants={itemVariants}>
-                  <span className="text-green-500 mr-2 mt-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
-                  </span>
-                  <span className="text-gray-700">Database design & optimization</span>
-                </motion.li>
-                <motion.li className="flex items-start" variants={itemVariants}>
-                  <span className="text-green-500 mr-2 mt-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
-                  </span>
-                  <span className="text-gray-700">Responsive frontend development</span>
-                </motion.li>
-                <motion.li className="flex items-start" variants={itemVariants}>
-                  <span className="text-green-500 mr-2 mt-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
-                  </span>
-                  <span className="text-gray-700">Data analysis & visualization</span>
-                </motion.li>
-              </motion.ul>
-            </motion.div>
+              </h3>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                {[
+                  { quality: "Problem Solving", desc: "Strong analytical and debugging skills" },
+                  { quality: "Clean Code", desc: "Structured and maintainable coding practices" },
+                  { quality: "Fast Learner", desc: "Quick adaptation to modern technologies" },
+                  { quality: "Team Collaboration", desc: "Effective communication & teamwork" },
+                ].map((item, index) => (
+                  <div
+                    key={index}
+                    className="p-3 sm:p-4 rounded-xl bg-gray-800/30 border border-gray-700/50 hover:border-pink-500/30 transition-all duration-300"
+                  >
+                    <div className="text-sm sm:text-base md:text-lg font-semibold text-white mb-1 sm:mb-2">
+                      {item.quality}
+                    </div>
+                    <div className="text-xs sm:text-sm text-gray-400">{item.desc}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </motion.div>
         </div>
+
+        {/* CTA Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.8 }}
+          className="mt-10 sm:mt-12 md:mt-16 text-center"
+        >
+          <motion.p
+            className="text-gray-400 text-xs sm:text-sm md:text-base mb-6 sm:mb-8 max-w-2xl mx-auto px-2"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ delay: 1 }}
+          >
+            Passionate about developing secure, scalable, and high-performance web applications while delivering innovative full-stack solutions that create real business impact.
+          </motion.p>
+
+          <motion.a
+            href="#contact"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="inline-flex items-center gap-2 sm:gap-3 px-5 sm:px-6 md:px-8 py-3 sm:py-4 bg-gradient-to-r from-cyan-600 via-purple-600 to-pink-600 text-white text-sm sm:text-base font-semibold rounded-lg sm:rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 group"
+          >
+            <span>Let's Work Together</span>
+            <motion.svg
+              className="h-4 w-4 sm:h-5 sm:w-5"
+              animate={{ x: [0, 5, 0] }}
+              transition={{ duration: 1.5, repeat: Infinity }}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </motion.svg>
+          </motion.a>
+        </motion.div>
       </div>
     </section>
   );
