@@ -24,14 +24,16 @@ export default function Navbar() {
   ];
 
   const socialLinks = [
-    { icon: <FiGithub />, href: "https://github.com", color: "hover:text-purple-400" },
-    { icon: <FiLinkedin />, href: "https://linkedin.com", color: "hover:text-blue-400" },
+    { icon: <FiGithub />, href: "https://github.com/hinamurme", color: "hover:text-purple-400" },
+    { icon: <FiLinkedin />, href: "https://linkedin.com/in/hinamurme", color: "hover:text-blue-400" },
     { icon: <FiMail />, href: "mailto:murmehina45@gmail.com", color: "hover:text-pink-400" },
   ];
 
-  // Initialize dark mode from localStorage
+  // Initialize dark mode from localStorage (only on client)
   useEffect(() => {
     setMounted(true);
+    
+    // Check localStorage and system preference
     const savedTheme = localStorage.getItem('theme');
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     
@@ -56,17 +58,21 @@ export default function Navbar() {
     }
   };
 
-  // Mouse tracking for background glow
+  // Mouse tracking for background glow (only when mounted)
   useEffect(() => {
+    if (!mounted) return;
+    
     const handleMouseMove = (e) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
     };
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, []);
+  }, [mounted]);
 
   // Scroll effect
   useEffect(() => {
+    if (!mounted) return;
+    
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
       
@@ -84,22 +90,25 @@ export default function Navbar() {
     };
 
     window.addEventListener("scroll", handleScroll);
-    handleScroll();
+    handleScroll(); // Initial check
+    
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [navLinks]);
+  }, [mounted, navLinks]); // Added navLinks dependency
 
-  // Prevent hydration mismatch
+  // Prevent hydration mismatch - return null on server
   if (!mounted) return null;
 
   return (
     <>
-      {/* Animated background glow */}
-      <motion.div
-        className="fixed inset-0 pointer-events-none z-40"
-        animate={{
-          background: `radial-gradient(600px at ${mousePosition.x}px ${mousePosition.y}px, rgba(120, 119, 198, 0.15), transparent 80%)`,
-        }}
-      />
+      {/* Animated background glow - only show when mounted */}
+      {mounted && (
+        <motion.div
+          className="fixed inset-0 pointer-events-none z-40"
+          animate={{
+            background: `radial-gradient(600px at ${mousePosition.x}px ${mousePosition.y}px, rgba(120, 119, 198, 0.15), transparent 80%)`,
+          }}
+        />
+      )}
 
       {/* Main Navbar */}
       <motion.nav
@@ -108,8 +117,8 @@ export default function Navbar() {
         transition={{ duration: 0.6, ease: "easeOut" }}
         className={`fixed top-0 w-full z-50 transition-all duration-500 ${
           isScrolled
-            ? "bg-gray-900/90 dark:bg-gray-900/90 backdrop-blur-xl shadow-2xl py-3 border-b border-gray-800/50 dark:border-gray-800/50"
-            : "bg-gradient-to-b from-gray-900/95 via-gray-900/90 to-transparent dark:from-gray-900/95 dark:via-gray-900/90 dark:to-transparent py-5"
+            ? "bg-gray-900/90 backdrop-blur-xl shadow-2xl py-3 border-b border-gray-800/50"
+            : "bg-gradient-to-b from-gray-900/95 via-gray-900/90 to-transparent py-5"
         }`}
       >
         {/* Gradient accent line */}
@@ -120,28 +129,30 @@ export default function Navbar() {
           transition={{ duration: 0.8, delay: 0.3 }}
         />
 
-        {/* Floating particles */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          {[...Array(15)].map((_, i) => (
-            <motion.div
-              key={i}
-              className="absolute w-1 h-1 bg-cyan-400/30 rounded-full"
-              initial={{
-                x: Math.random() * 100 + "%",
-                y: Math.random() * 100 + "%",
-              }}
-              animate={{
-                y: [null, -20, 0],
-                opacity: [0.3, 0.6, 0.3],
-              }}
-              transition={{
-                duration: 2 + Math.random(),
-                repeat: Infinity,
-                delay: i * 0.1,
-              }}
-            />
-          ))}
-        </div>
+        {/* Floating particles - only when mounted */}
+        {mounted && (
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            {[...Array(15)].map((_, i) => (
+              <motion.div
+                key={i}
+                className="absolute w-1 h-1 bg-cyan-400/30 rounded-full"
+                initial={{
+                  x: Math.random() * 100 + "%",
+                  y: Math.random() * 100 + "%",
+                }}
+                animate={{
+                  y: [0, -20, 0],
+                  opacity: [0.3, 0.6, 0.3],
+                }}
+                transition={{
+                  duration: 2 + Math.random(),
+                  repeat: Infinity,
+                  delay: i * 0.1,
+                }}
+              />
+            ))}
+          </div>
+        )}
 
         <div className="container mx-auto px-6 sm:px-8 lg:px-12">
           <div className="flex items-center justify-between">
@@ -163,7 +174,7 @@ export default function Navbar() {
                     animate={{ rotate: [0, 360] }}
                     transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
                   >
-                    <div className="absolute inset-1 rounded-lg bg-gray-900 dark:bg-gray-900"></div>
+                    <div className="absolute inset-1 rounded-lg bg-gray-900"></div>
                     <span className="relative text-lg font-bold bg-gradient-to-r from-cyan-300 to-purple-300 bg-clip-text text-transparent">
                       HM
                     </span>
@@ -201,7 +212,7 @@ export default function Navbar() {
                     onClick={() => setActiveSection(link.id)}
                     className="relative px-6 py-2 group"
                   >
-                    {/* Animated scale layer (no bg) */}
+                    {/* Animated scale layer */}
                     <motion.div
                       className="absolute inset-0 rounded-xl"
                       animate={{
@@ -227,7 +238,7 @@ export default function Navbar() {
                         className={`font-medium ${
                           activeSection === link.id
                             ? "text-transparent bg-gradient-to-r from-cyan-300 via-purple-300 to-pink-300 bg-clip-text"
-                            : "text-gray-300 dark:text-gray-300 group-hover:text-white dark:group-hover:text-white"
+                            : "text-gray-300 group-hover:text-white"
                         } transition-colors duration-300`}
                       >
                         {link.label}
@@ -258,7 +269,7 @@ export default function Navbar() {
                     rel="noopener noreferrer"
                     whileHover={{ y: -3, scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
-                    className={`relative p-2 rounded-lg bg-gray-800/50 dark:bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 dark:border-gray-700/50 ${social.color} text-gray-300 dark:text-gray-300 hover:text-white dark:hover:text-white transition-colors group`}
+                    className={`relative p-2 rounded-lg bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 ${social.color} text-gray-300 hover:text-white transition-colors group`}
                   >
                     <div className="relative z-10">{social.icon}</div>
                     <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/0 to-purple-500/0 rounded-lg group-hover:from-cyan-500/10 group-hover:to-purple-500/10 transition-all duration-300" />
@@ -266,12 +277,12 @@ export default function Navbar() {
                 ))}
               </div>
 
-              {/* Dark Mode Toggle - FIXED VERSION */}
+              {/* Dark Mode Toggle */}
               <motion.button
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
                 onClick={toggleDarkMode}
-                className="relative p-2 rounded-xl bg-gradient-to-br from-gray-800 to-gray-900 dark:from-gray-800 dark:to-gray-900 border border-gray-700/50 dark:border-gray-700/50"
+                className="relative p-2 rounded-xl bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50"
                 aria-label="Toggle dark mode"
               >
                 <AnimatePresence mode="wait" initial={false}>
@@ -281,7 +292,7 @@ export default function Navbar() {
                     animate={{ y: 0, opacity: 1 }}
                     exit={{ y: 20, opacity: 0 }}
                     transition={{ duration: 0.2 }}
-                    className="text-yellow-300 dark:text-indigo-300"
+                    className={darkMode ? "text-yellow-300" : "text-indigo-300"}
                   >
                     {darkMode ? <RiSunLine size={20} /> : <RiMoonLine size={20} />}
                   </motion.div>
@@ -293,7 +304,7 @@ export default function Navbar() {
               <motion.div
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="relative"
+                className="relative group"
               >
                 <div className="absolute -inset-1 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 rounded-xl blur opacity-30 group-hover:opacity-50 transition-opacity duration-300" />
                 <Link
@@ -359,7 +370,7 @@ export default function Navbar() {
               transition={{ duration: 0.3, ease: "easeInOut" }}
               className="lg:hidden overflow-hidden"
             >
-              <div className="mt-4 py-6 bg-gradient-to-b from-gray-900/95 via-gray-900/98 to-gray-900 dark:from-gray-900/95 dark:via-gray-900/98 dark:to-gray-900 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-800/50 dark:border-gray-800/50 mx-4">
+              <div className="mt-4 py-6 bg-gradient-to-b from-gray-900/95 via-gray-900/98 to-gray-900 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-800/50 mx-4">
                 {/* Mobile menu gradient accent */}
                 <div className="absolute top-0 left-4 right-4 h-0.5 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 rounded-full" />
                 
@@ -376,7 +387,7 @@ export default function Navbar() {
                         className={`flex items-center gap-4 px-4 py-4 rounded-xl transition-all duration-300 group ${
                           activeSection === link.id
                             ? "bg-gradient-to-r from-cyan-500/20 via-purple-500/20 to-pink-500/20 border border-cyan-500/30 border-purple-500/30 border-pink-500/30"
-                            : "border border-gray-700/30 dark:border-gray-700/30 hover:border-cyan-500/30 hover:border-purple-500/30 hover:border-pink-500/30"
+                            : "border border-gray-700/30 hover:border-cyan-500/30 hover:border-purple-500/30 hover:border-pink-500/30"
                         }`}
                         onClick={() => {
                           setIsMenuOpen(false);
@@ -395,7 +406,7 @@ export default function Navbar() {
                           className={`flex-1 font-medium ${
                             activeSection === link.id
                               ? "text-transparent bg-gradient-to-r from-cyan-300 via-purple-300 to-pink-300 bg-clip-text"
-                              : "text-gray-300 dark:text-gray-300 group-hover:text-white dark:group-hover:text-white"
+                              : "text-gray-300 group-hover:text-white"
                           }`}
                         >
                           {link.label}
@@ -429,7 +440,7 @@ export default function Navbar() {
                         animate={{ scale: 1, opacity: 1 }}
                         transition={{ delay: (navLinks.length + index) * 0.1 }}
                         whileHover={{ y: -3 }}
-                        className={`p-3 rounded-xl bg-gray-800/50 dark:bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 dark:border-gray-700/50 ${social.color} text-gray-300 dark:text-gray-300`}
+                        className={`p-3 rounded-xl bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 ${social.color} text-gray-300`}
                       >
                         {social.icon}
                       </motion.a>
@@ -478,7 +489,7 @@ export default function Navbar() {
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.9 }}
                       onClick={toggleDarkMode}
-                      className="relative p-3 rounded-xl bg-gradient-to-br from-gray-800 to-gray-900 dark:from-gray-800 dark:to-gray-900 border border-gray-700/50 dark:border-gray-700/50"
+                      className="relative p-3 rounded-xl bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50"
                       aria-label="Toggle dark mode"
                     >
                       <AnimatePresence mode="wait" initial={false}>
@@ -488,7 +499,7 @@ export default function Navbar() {
                           animate={{ y: 0, opacity: 1 }}
                           exit={{ y: 20, opacity: 0 }}
                           transition={{ duration: 0.2 }}
-                          className="text-yellow-300 dark:text-indigo-300"
+                          className={darkMode ? "text-yellow-300" : "text-indigo-300"}
                         >
                           {darkMode ? <RiSunLine size={24} /> : <RiMoonLine size={24} />}
                         </motion.div>

@@ -9,7 +9,8 @@ export default function Hero() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [currentRole, setCurrentRole] = useState(0);
   const canvasRef = useRef(null);
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const [particleConfig, setParticleConfig] = useState({ count: 40 });
 
   // Typing roles animation
   const roles = [
@@ -21,16 +22,23 @@ export default function Hero() {
     "MongoDB Database Developer"
   ];
 
+  // Set mounted state
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   // Role cycling effect
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentRole((prev) => (prev + 1) % roles.length);
     }, 3000);
     return () => clearInterval(interval);
-  }, []);
+  }, [roles.length]);
 
   // Initialize floating particles with connections
   useEffect(() => {
+    if (!mounted) return;
+    
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -43,8 +51,16 @@ export default function Hero() {
 
     // Set canvas size
     const resizeCanvas = () => {
+      if (!canvas) return;
       canvas.width = canvas.offsetWidth;
       canvas.height = canvas.offsetHeight;
+      
+      // Adjust particle count based on screen size
+      const newCount = Math.min(
+        60,
+        Math.floor((canvas.width * canvas.height) / 15000)
+      );
+      setParticleConfig(prev => ({ ...prev, count: newCount }));
     };
 
     resizeCanvas();
@@ -78,20 +94,16 @@ export default function Hero() {
           }
         }
 
-        // Bounce off walls
+        // Wrap around edges instead of bounce
         if (this.x > canvas.width) {
           this.x = 0;
-          this.y = Math.random() * canvas.height;
         } else if (this.x < 0) {
           this.x = canvas.width;
-          this.y = Math.random() * canvas.height;
         }
         if (this.y > canvas.height) {
           this.y = 0;
-          this.x = Math.random() * canvas.width;
         } else if (this.y < 0) {
           this.y = canvas.height;
-          this.x = Math.random() * canvas.width;
         }
 
         // Natural movement
@@ -113,14 +125,15 @@ export default function Hero() {
       }
     }
 
-    // Create particles
-    const particleCount = Math.min(
-      60,
-      Math.floor((canvas.width * canvas.height) / 10000),
-    );
-    for (let i = 0; i < particleCount; i++) {
-      particles.push(new Particle());
-    }
+    // Create particles based on config
+    const createParticles = () => {
+      particles.length = 0;
+      for (let i = 0; i < particleConfig.count; i++) {
+        particles.push(new Particle());
+      }
+    };
+    
+    createParticles();
 
     // Draw connections between particles
     function drawConnections() {
@@ -142,6 +155,7 @@ export default function Hero() {
       }
     }
 
+    let animationFrame;
     function animate() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -152,7 +166,7 @@ export default function Hero() {
       });
 
       drawConnections();
-      requestAnimationFrame(animate);
+      animationFrame = requestAnimationFrame(animate);
     }
 
     animate();
@@ -160,8 +174,8 @@ export default function Hero() {
     // Mouse move handler for canvas
     const handleMouseMove = (e) => {
       const rect = canvas.getBoundingClientRect();
-      mouse.x = e.x - rect.left;
-      mouse.y = e.y - rect.top;
+      mouse.x = e.clientX - rect.left;
+      mouse.y = e.clientY - rect.top;
     };
 
     const handleMouseLeave = () => {
@@ -174,26 +188,33 @@ export default function Hero() {
 
     const handleResize = () => {
       resizeCanvas();
+      createParticles();
     };
 
     window.addEventListener("resize", handleResize);
-    setIsLoaded(true);
 
     return () => {
       window.removeEventListener("resize", handleResize);
-      canvas.removeEventListener("mousemove", handleMouseMove);
-      canvas.removeEventListener("mouseleave", handleMouseLeave);
+      if (canvas) {
+        canvas.removeEventListener("mousemove", handleMouseMove);
+        canvas.removeEventListener("mouseleave", handleMouseLeave);
+      }
+      if (animationFrame) {
+        cancelAnimationFrame(animationFrame);
+      }
     };
-  }, []);
+  }, [mounted, particleConfig.count]);
 
   // Mouse position for interactive effects
   useEffect(() => {
+    if (!mounted) return;
+    
     const handleMouseMove = (e) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
     };
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, []);
+  }, [mounted]);
 
   // Stats data
   const stats = [
@@ -222,6 +243,22 @@ export default function Hero() {
       color: "text-green-400",
     },
   ];
+
+  // Don't render until mounted to prevent hydration mismatch
+  if (!mounted) {
+    return (
+      <section
+        id="home"
+        className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-950 via-gray-900 to-black py-16 px-4 sm:px-6 lg:px-8 relative overflow-hidden"
+      >
+        <div className="relative z-10 w-full max-w-7xl mx-auto">
+          <div className="text-center text-gray-400">
+            Loading...
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section
@@ -282,15 +319,8 @@ export default function Hero() {
       <div className="relative z-10 w-full max-w-7xl mx-auto">
         {/* Main content with responsive layout */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 items-center">
-          {/* Left Column - Main content (visible on both mobile and desktop) */}
+          {/* Left Column - Main content */}
           <div className="lg:col-span-2 space-y-10 lg:space-y-10">
-            {/* Tagline with animation */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6 }}
-            ></motion.div>
-
             {/* Hero Title with typing effect */}
             <div className="space-y-4">
               <motion.h1
@@ -298,7 +328,11 @@ export default function Hero() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.7, delay: 0.2 }}
                 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight"
-              ></motion.h1>
+              >
+                <span className="bg-gradient-to-r from-cyan-300 via-purple-300 to-pink-300 bg-clip-text text-transparent">
+                  Hina Murme
+                </span>
+              </motion.h1>
 
               {/* Animated role */}
               <motion.div
@@ -312,12 +346,12 @@ export default function Hero() {
               </motion.div>
             </div>
 
-            {/* Profile Image - Mobile Only (after role, before description) */}
+            {/* Profile Image - Mobile Only */}
             <div className="block lg:hidden">
-              <ProfileImage />
+              <ProfileImage mounted={mounted} />
             </div>
 
-            {/* Description with modern styling */}
+            {/* Description */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -352,7 +386,7 @@ export default function Hero() {
               </p>
             </motion.div>
 
-            {/* CTA Buttons with unique styling */}
+            {/* CTA Buttons */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -423,7 +457,7 @@ export default function Hero() {
 
           {/* Right Column - Profile - Desktop Only */}
           <div className="hidden lg:block lg:col-span-1">
-            <ProfileImage />
+            <ProfileImage mounted={mounted} />
           </div>
         </div>
 
@@ -492,8 +526,10 @@ export default function Hero() {
   );
 }
 
-// Profile Image Component (extracted to maintain animations and avoid duplication)
-function ProfileImage() {
+// Profile Image Component with mounted prop
+function ProfileImage({ mounted }) {
+  if (!mounted) return null;
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.9, rotate: -5 }}
