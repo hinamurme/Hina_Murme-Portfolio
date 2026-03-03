@@ -6,6 +6,21 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FiGithub, FiLinkedin, FiMail } from "react-icons/fi";
 import { RiSunLine, RiMoonLine } from "react-icons/ri";
 
+// Move constants outside component
+const navLinks = [
+  { id: "home", label: "Home", icon: "🏠" },
+  { id: "about", label: "About", icon: "👩‍💻" },
+  { id: "projects", label: "Projects", icon: "🚀" },
+  { id: "skills", label: "Skills", icon: "⚡" },
+  { id: "contact", label: "Contact", icon: "📧" },
+];
+
+const socialLinks = [
+  { icon: <FiGithub />, href: "https://github.com/hinamurme", color: "hover:text-purple-400" },
+  { icon: <FiLinkedin />, href: "https://linkedin.com/in/hinamurme", color: "hover:text-blue-400" },
+  { icon: <FiMail />, href: "mailto:murmehina45@gmail.com", color: "hover:text-pink-400" },
+];
+
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -15,46 +30,48 @@ export default function Navbar() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [mounted, setMounted] = useState(false);
 
-  const navLinks = [
-    { id: "home", label: "Home", icon: "🏠" },
-    { id: "about", label: "About", icon: "👩‍💻" },
-    { id: "projects", label: "Projects", icon: "🚀" },
-    { id: "skills", label: "Skills", icon: "⚡" },
-    { id: "contact", label: "Contact", icon: "📧" },
-  ];
-
-  const socialLinks = [
-    { icon: <FiGithub />, href: "https://github.com/hinamurme", color: "hover:text-purple-400" },
-    { icon: <FiLinkedin />, href: "https://linkedin.com/in/hinamurme", color: "hover:text-blue-400" },
-    { icon: <FiMail />, href: "mailto:murmehina45@gmail.com", color: "hover:text-pink-400" },
-  ];
-
   // Initialize dark mode from localStorage (only on client)
   useEffect(() => {
     setMounted(true);
     
-    // Check localStorage and system preference
-    const savedTheme = localStorage.getItem('theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    
-    if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
-      setDarkMode(true);
-      document.documentElement.classList.add('dark');
-    } else {
-      setDarkMode(false);
-      document.documentElement.classList.remove('dark');
+    try {
+      const savedTheme = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      
+      if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+        setDarkMode(true);
+        document.documentElement.classList.add('dark');
+      } else {
+        setDarkMode(false);
+        document.documentElement.classList.remove('dark');
+      }
+    } catch (error) {
+      // Fallback to system preference if localStorage fails
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      setDarkMode(prefersDark);
+      if (prefersDark) {
+        document.documentElement.classList.add('dark');
+      }
     }
   }, []);
 
-  // Toggle dark mode
+  // Toggle dark mode with error handling
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
     if (!darkMode) {
       document.documentElement.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
+      try {
+        localStorage.setItem('theme', 'dark');
+      } catch (error) {
+        console.warn('Could not save theme preference:', error);
+      }
     } else {
       document.documentElement.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
+      try {
+        localStorage.setItem('theme', 'light');
+      } catch (error) {
+        console.warn('Could not save theme preference:', error);
+      }
     }
   };
 
@@ -76,9 +93,8 @@ export default function Navbar() {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
       
-      const sections = navLinks.map(link => link.id);
-      const currentSection = sections.find(section => {
-        const element = document.getElementById(section);
+      const currentSection = navLinks.find(section => {
+        const element = document.getElementById(section.id);
         if (element) {
           const rect = element.getBoundingClientRect();
           return rect.top <= 100 && rect.bottom >= 100;
@@ -86,14 +102,14 @@ export default function Navbar() {
         return false;
       });
       
-      if (currentSection) setActiveSection(currentSection);
+      if (currentSection) setActiveSection(currentSection.id);
     };
 
     window.addEventListener("scroll", handleScroll);
     handleScroll(); // Initial check
     
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [mounted, navLinks]); // Added navLinks dependency
+  }, [mounted]); // Removed navLinks dependency since it's now constant
 
   // Prevent hydration mismatch - return null on server
   if (!mounted) return null;
@@ -184,9 +200,7 @@ export default function Navbar() {
                   
                   {/* Text logo */}
                   <div className="flex flex-col">
-                    <span className="text-xl font-bold bg-gradient-to-r from-cyan-300 via-purple-300 to-pink-300 bg-clip-text text-transparent">
-                      Hina Murme
-                    </span>
+                    
                     <motion.div
                       className="h-0.5 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full"
                       initial={{ width: 0 }}
