@@ -6,20 +6,45 @@ import { FaHeart, FaGithub, FaLinkedin, FaFileAlt, FaArrowUp } from "react-icons
 import { FiMail, FiCoffee } from "react-icons/fi";
 
 export default function Footer() {
-  const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+  const [currentYear, setCurrentYear] = useState(2024);
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [hoveredIcon, setHoveredIcon] = useState(null);
+  const [mounted, setMounted] = useState(false);
+  const [particleCount, setParticleCount] = useState(4);
 
   useEffect(() => {
+    setMounted(true);
+    setCurrentYear(new Date().getFullYear());
+    
+    // Set particle count based on window width
+    const updateParticleCount = () => {
+      setParticleCount(window.innerWidth < 640 ? 4 : 8);
+    };
+    
+    updateParticleCount();
+    
     const handleScroll = () => {
       setShowScrollTop(window.scrollY > 500);
     };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    
+    if (typeof window !== 'undefined') {
+      window.addEventListener("scroll", handleScroll);
+      window.addEventListener("resize", updateParticleCount);
+      handleScroll();
+    }
+    
+    return () => {
+      if (typeof window !== 'undefined') {
+        window.removeEventListener("scroll", handleScroll);
+        window.removeEventListener("resize", updateParticleCount);
+      }
+    };
   }, []);
 
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
   };
 
 const socialLinks = [
@@ -30,7 +55,6 @@ const socialLinks = [
     color: "hover:text-purple-400", 
     bgColor: "hover:bg-purple-500/10" 
   },
-
   { 
     icon: <FaLinkedin />, 
     label: "LinkedIn", 
@@ -38,7 +62,6 @@ const socialLinks = [
     color: "hover:text-blue-400", 
     bgColor: "hover:bg-blue-500/10" 
   },
-
   { 
     icon: <FiMail />, 
     label: "Email", 
@@ -46,7 +69,6 @@ const socialLinks = [
     color: "hover:text-pink-400", 
     bgColor: "hover:bg-pink-500/10" 
   },
-
   { 
     icon: <FaFileAlt />, 
     label: "Resume", 
@@ -95,6 +117,22 @@ const quickLinks = [
     }
   };
 
+  // Don't render scroll-dependent elements until mounted
+  if (!mounted) {
+    return (
+      <footer className="relative overflow-hidden bg-gradient-to-br from-gray-950 via-gray-900 to-black border-t border-gray-800/50">
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 md:py-12">
+          <div className="space-y-8 sm:space-y-10 md:space-y-12">
+            {/* Basic footer structure without animations that depend on viewport */}
+            <div className="text-center text-gray-400">
+              Loading footer...
+            </div>
+          </div>
+        </div>
+      </footer>
+    );
+  }
+
   return (
     <>
       {/* Scroll to Top Button - Responsive */}
@@ -133,7 +171,7 @@ const quickLinks = [
             variants={footerVariants}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "-100px" }}
             className="space-y-8 sm:space-y-10 md:space-y-12"
           >
             {/* Top Section - Responsive Grid */}
@@ -142,7 +180,7 @@ const quickLinks = [
               <motion.div variants={itemVariants} className="space-y-3 sm:space-y-4">
                 <div className="flex items-center gap-2 sm:gap-3">
                   <motion.div
-                    className="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-purple-500 flex items-center justify-center"
+                    className="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-purple-500 flex items-center justify-center relative"
                     animate={{ rotate: 360 }}
                     transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
                   >
@@ -176,13 +214,9 @@ const quickLinks = [
                         href={link.href}
                         className="text-xs sm:text-sm text-gray-400 hover:text-cyan-300 transition-colors duration-300 flex items-center gap-1 sm:gap-2 group"
                       >
-                        <motion.span
-                          className="text-cyan-500 opacity-0 group-hover:opacity-100"
-                          animate={{ x: [0, 5, 0] }}
-                          transition={{ duration: 1.5, repeat: Infinity }}
-                        >
+                        <span className="text-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                           →
-                        </motion.span>
+                        </span>
                         {link.label}
                       </a>
                     </motion.li>
@@ -344,28 +378,30 @@ const quickLinks = [
           </motion.div>
         </div>
 
-        {/* Floating Particles - Fewer on mobile */}
-        <div className="absolute inset-0 pointer-events-none">
-          {[...Array(window.innerWidth < 640 ? 4 : 8)].map((_, i) => (
-            <motion.div
-              key={i}
-              className="absolute w-0.5 sm:w-1 h-0.5 sm:h-1 bg-cyan-400/20 rounded-full"
-              initial={{
-                x: Math.random() * 100 + "%",
-                y: Math.random() * 100 + "%",
-              }}
-              animate={{
-                y: [null, -5, 0],
-                opacity: [0.2, 0.5, 0.2],
-              }}
-              transition={{
-                duration: 3 + Math.random() * 2,
-                repeat: Infinity,
-                delay: i * 0.3,
-              }}
-            />
-          ))}
-        </div>
+        {/* Floating Particles - Fixed for SSR */}
+        {mounted && (
+          <div className="absolute inset-0 pointer-events-none">
+            {[...Array(particleCount)].map((_, i) => (
+              <motion.div
+                key={i}
+                className="absolute w-0.5 sm:w-1 h-0.5 sm:h-1 bg-cyan-400/20 rounded-full"
+                initial={{
+                  x: Math.random() * 100 + "%",
+                  y: Math.random() * 100 + "%",
+                }}
+                animate={{
+                  y: [0, -10, 0],
+                  opacity: [0.2, 0.5, 0.2],
+                }}
+                transition={{
+                  duration: 3 + Math.random() * 2,
+                  repeat: Infinity,
+                  delay: i * 0.3,
+                }}
+              />
+            ))}
+          </div>
+        )}
       </footer>
     </>
   );
