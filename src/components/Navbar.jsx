@@ -200,7 +200,9 @@ export default function Navbar() {
                   
                   {/* Text logo */}
                   <div className="flex flex-col">
-                    
+                    <span className="text-xl font-bold bg-gradient-to-r from-cyan-300 via-purple-300 to-pink-300 bg-clip-text text-transparent">
+                      Hina Murme
+                    </span>
                     <motion.div
                       className="h-0.5 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full"
                       initial={{ width: 0 }}

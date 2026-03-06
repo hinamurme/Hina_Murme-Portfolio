@@ -115,6 +115,15 @@ export default function Projects() {
     },
   };
 
+  // Function to handle link clicks
+  const handleLinkClick = (e, url) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (url && url !== "#") {
+      window.open(url, "_blank", "noopener,noreferrer");
+    }
+  };
+
   return (
     <section
       id="projects"
@@ -252,57 +261,54 @@ export default function Projects() {
                     {project.description}
                   </p>
 
-                  {/* Project Links */}
+                  {/* Project Links - FIXED VERSION */}
                   <div className="flex items-center justify-between pt-3 border-t border-gray-800">
                     <div className="flex items-center gap-2 sm:gap-3">
-                      <motion.a
-                        href={project.github}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                      {/* GitHub Button */}
+                      <motion.button
+                        onClick={(e) => handleLinkClick(e, project.github)}
                         className={`flex items-center gap-1 sm:gap-2 px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 rounded-lg transition-all text-xs sm:text-sm ${
                           project.github === "#"
                             ? "bg-gray-800/50 text-gray-500 cursor-not-allowed border border-gray-700"
-                            : "bg-gray-800/50 text-gray-300 hover:text-white hover:bg-gray-800 border border-gray-700 hover:border-cyan-500/30"
+                            : "bg-gray-800/50 text-gray-300 hover:text-white hover:bg-gray-800 border border-gray-700 hover:border-cyan-500/30 cursor-pointer"
                         }`}
-                        onClick={(e) =>
-                          project.github === "#" && e.preventDefault()
-                        }
                         whileHover={{
                           scale: project.github !== "#" ? 1.05 : 1,
                         }}
                         whileTap={{ scale: project.github !== "#" ? 0.95 : 1 }}
+                        disabled={project.github === "#"}
                       >
                         <FiGithub className="h-3 w-3 sm:h-4 sm:w-4" />
                         <span className="hidden xs:inline">Code</span>
-                      </motion.a>
+                      </motion.button>
 
-                      <motion.a
-                        href={project.demo}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                      {/* Live Demo Button */}
+                      <motion.button
+                        onClick={(e) => handleLinkClick(e, project.demo)}
                         className={`flex items-center gap-1 sm:gap-2 px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 rounded-lg transition-all text-xs sm:text-sm ${
                           project.demo === "#"
                             ? "bg-gray-800/50 text-gray-500 cursor-not-allowed border border-gray-700"
-                            : "bg-gradient-to-r from-cyan-600 to-purple-600 text-white hover:shadow-lg hover:shadow-cyan-500/20 border border-cyan-500/30"
+                            : "bg-gradient-to-r from-cyan-600 to-purple-600 text-white hover:shadow-lg hover:shadow-cyan-500/20 border border-cyan-500/30 cursor-pointer"
                         }`}
-                        onClick={(e) =>
-                          project.demo === "#" && e.preventDefault()
-                        }
-                        whileHover={{ scale: project.demo !== "#" ? 1.05 : 1 }}
+                        whileHover={{
+                          scale: project.demo !== "#" ? 1.05 : 1,
+                        }}
                         whileTap={{ scale: project.demo !== "#" ? 0.95 : 1 }}
+                        disabled={project.demo === "#"}
                       >
                         <FiExternalLink className="h-3 w-3 sm:h-4 sm:w-4" />
                         <span className="hidden xs:inline">Live</span>
-                      </motion.a>
+                      </motion.button>
                     </div>
 
                     {/* View Details Button */}
                     <motion.button
-                      className="p-1.5 sm:p-2 rounded-lg bg-gray-800/50 text-gray-400 hover:text-white hover:bg-gray-800 border border-gray-700 hover:border-purple-500/30 transition-all"
+                      className="p-1.5 sm:p-2 rounded-lg bg-gray-800/50 text-gray-400 hover:text-white hover:bg-gray-800 border border-gray-700 hover:border-purple-500/30 transition-all cursor-pointer"
                       whileHover={{ scale: 1.1, rotate: 5 }}
                       whileTap={{ scale: 0.9 }}
                       onClick={() => {
                         console.log(`View details for ${project.name}`);
+                        // Add your details modal or navigation here
                       }}
                     >
                       <FiEye className="h-3 w-3 sm:h-4 sm:w-4" />
@@ -312,7 +318,7 @@ export default function Projects() {
 
                 {/* Hover Glow Effect */}
                 <motion.div
-                  className="absolute inset-0 rounded-xl sm:rounded-2xl  "
+                  className="absolute inset-0 rounded-xl sm:rounded-2xl"
                   initial={false}
                   animate={{
                     opacity: hoveredProject === project.name ? 1 : 0,
@@ -321,78 +327,6 @@ export default function Projects() {
               </motion.div>
             </motion.div>
           ))}
-        </motion.div>
-
-        {/* Stats and CTA */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.5 }}
-          className="mt-12 sm:mt-16 text-center px-4"
-        >
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 md:gap-6 mb-8 sm:mb-12">
-            {[
-              { value: "4", label: "Total Projects", color: "text-cyan-400" },
-              { value: "4", label: "Categories", color: "text-purple-400" },
-              { value: "15+", label: "Technologies", color: "text-pink-400" },
-              {
-                value: "100%",
-                label: "Client Satisfaction",
-                color: "text-green-400",
-              },
-            ].map((stat, index) => (
-              <motion.div
-                key={stat.label}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.6 + index * 0.1 }}
-                className="text-center p-2 sm:p-3 md:p-4"
-              >
-                <div
-                  className={`text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold ${stat.color} mb-1 sm:mb-2`}
-                >
-                  {stat.value}
-                </div>
-                <div className="text-xs sm:text-sm text-gray-400">
-                  {stat.label}
-                </div>
-              </motion.div>
-            ))}
-          </div>
-
-          <motion.p
-            className="text-sm sm:text-base text-gray-400 mb-6 sm:mb-8 max-w-2xl mx-auto"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ delay: 1 }}
-          >
-            Interested in collaborating or have a project in mind?
-          </motion.p>
-
-          <motion.a
-            href="#contact"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="inline-flex items-center gap-2 sm:gap-3 px-5 sm:px-6 md:px-8 py-3 sm:py-3.5 md:py-4 bg-gradient-to-r from-cyan-600 via-purple-600 to-pink-600 text-sm sm:text-base text-white font-semibold rounded-lg sm:rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 group"
-          >
-            <span>Start a Project With Me</span>
-            <motion.svg
-              className="h-4 w-4 sm:h-5 sm:w-5"
-              animate={{ x: [0, 5, 0] }}
-              transition={{ duration: 1.5, repeat: Infinity }}
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M17 8l4 4m0 0l-4 4m4-4H3"
-              />
-            </motion.svg>
-          </motion.a>
         </motion.div>
       </div>
     </section>

@@ -373,58 +373,7 @@ const skillsData = [
         </motion.div>
 
         {/* Legend & Stats */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.8 }}
-          className="mt-12 sm:mt-16 mx-2 sm:mx-0 p-4 sm:p-6 md:p-8 bg-gray-900/50 backdrop-blur-sm rounded-xl sm:rounded-2xl border border-gray-800"
-        >
-          <div className="grid grid-cols-1 xs:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
-            <div className="text-center">
-              <div className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
-                {skillsData.length}+
-              </div>
-              <div className="text-xs sm:text-sm md:text-base text-gray-400">Technologies</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-                4
-              </div>
-              <div className="text-xs sm:text-sm md:text-base text-gray-400">Categories</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-pink-400 to-cyan-400 bg-clip-text text-transparent">
-                {Math.round(skillsData.reduce((acc, skill) => acc + skill.level, 0) / skillsData.length)}%
-              </div>
-              <div className="text-xs sm:text-sm md:text-base text-gray-400">Average Proficiency</div>
-            </div>
-          </div>
-
-          {/* Skill level guide */}
-          <div className="mt-6 sm:mt-8 pt-6 sm:pt-8 border-t border-gray-800">
-            <h4 className="text-base sm:text-lg font-semibold text-white mb-3 sm:mb-4">Skill Level Guide</h4>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3 md:gap-4">
-              {[
-                { level: "Beginner", range: "0-50%", color: "from-red-500 to-orange-500" },
-                { level: "Intermediate", range: "51-70%", color: "from-orange-500 to-yellow-500" },
-                { level: "Advanced", range: "71-85%", color: "from-yellow-500 to-green-500" },
-                { level: "Expert", range: "86-100%", color: "from-green-500 to-cyan-500" },
-              ].map((guide, index) => (
-                <motion.div
-                  key={guide.level}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.5, delay: 0.9 + index * 0.1 }}
-                  className="p-2 sm:p-3 md:p-4 rounded-lg sm:rounded-xl bg-gray-800/30 border border-gray-700"
-                >
-                  <div className={`h-1.5 sm:h-2 w-full rounded-full bg-gradient-to-r ${guide.color} mb-1.5 sm:mb-2`} />
-                  <div className="text-xs sm:text-sm font-medium text-white">{guide.level}</div>
-                  <div className="text-xs text-gray-400">{guide.range}</div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </motion.div>
+    
 
         {/* Call to Action */}
         <motion.div

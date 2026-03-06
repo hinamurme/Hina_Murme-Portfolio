@@ -326,9 +326,7 @@ export default function Hero() {
                 transition={{ duration: 0.7, delay: 0.2 }}
                 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight"
               >
-                <span className="bg-gradient-to-r from-cyan-300 via-purple-300 to-pink-300 bg-clip-text text-transparent">
-                  Hina Murme
-                </span>
+               
               </motion.h1>
 
               {/* Animated role */}
@@ -463,7 +461,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8 }}
-          className="mt-20 pt-8 border-t border-gray-800/50"
+          className="mt-10 pt-2 border-t border-gray-800/50"
         >
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
             {stats.map((stat, index) => (

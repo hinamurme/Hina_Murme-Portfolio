@@ -4,7 +4,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaGithub, FaLinkedin, FaEnvelope, FaPaperPlane, FaCheck, FaUser, FaCode } from "react-icons/fa";
 import { FiMail, FiMessageSquare, FiSend } from "react-icons/fi";
-import { SiLeetcode, SiHackerrank } from "react-icons/si";
+// import { SiLeetcode, SiHackerrank } from "react-icons/si";
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -45,24 +45,24 @@ export default function Contact() {
       borderColor: "border-red-500/30",
       username: "murmehina45@gmail.com"
     },
-    { 
-      icon: <SiLeetcode />, 
-      label: "LeetCode", 
-      href: "https://leetcode.com/u/hinamurme", 
-      color: "hover:text-orange-400", 
-      bgColor: "from-orange-500/20 to-orange-600/20",
-      borderColor: "border-orange-500/30",
-      username: "@hinamurme"
-    },
-    { 
-      icon: <SiHackerrank />, 
-      label: "HackerRank", 
-      href: "https://hackerrank.com/profile/hinamurme", 
-      color: "hover:text-green-400", 
-      bgColor: "from-green-500/20 to-green-600/20",
-      borderColor: "border-green-500/30",
-      username: "@hinamurme"
-    },
+    // { 
+    //   icon: <SiLeetcode />, 
+    //   label: "LeetCode", 
+    //   href: "https://leetcode.com/u/hinamurme", 
+    //   color: "hover:text-orange-400", 
+    //   bgColor: "from-orange-500/20 to-orange-600/20",
+    //   borderColor: "border-orange-500/30",
+    //   username: "@hinamurme"
+    // },
+    // { 
+    //   icon: <SiHackerrank />, 
+    //   label: "HackerRank", 
+    //   href: "https://hackerrank.com/profile/hinamurme", 
+    //   color: "hover:text-green-400", 
+    //   bgColor: "from-green-500/20 to-green-600/20",
+    //   borderColor: "border-green-500/30",
+    //   username: "@hinamurme"
+    // },
   ];
 
   const handleChange = (e) => {
@@ -463,6 +463,7 @@ export default function Contact() {
                       <p className="text-xs text-gray-400 line-clamp-2">{item.desc}</p>
                     </div>
                   </motion.div>
+                   
                 ))}
               </div>
             </motion.div>
