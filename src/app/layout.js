@@ -22,7 +22,7 @@ export const metadata = {
     type: "website",
   },
   icons: {
-    icon: "/logo.svg",
+    icon: "/H-logo.png",
   },
 };
 
